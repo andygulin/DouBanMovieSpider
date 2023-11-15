@@ -27,4 +27,4 @@ go build
 
 #### 配置MongoDB
 
-- conf/config.yaml
+- store/mongo.go
