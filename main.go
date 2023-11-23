@@ -1,8 +1,6 @@
 package main
 
-import (
-	"DouBanMovieSpider/cmd"
-)
+import "DouBanMovieSpider/cmd"
 
 func main() {
 	cmd.Execute()
