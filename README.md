@@ -11,38 +11,55 @@
 
 ```shell
 go build
+```
 
-# 打印爬取信息-主页
+```shell
+# 打印爬取信息
+# 主页
 ./DouBanMovieSpider subject info {subjectId}
-# 打印爬取信息-短评
+# 短评
 ./DouBanMovieSpider comment info {subjectId}
-# 打印爬取信息-影评
+# 影评
 ./DouBanMovieSpider review info {subjectId}
-# 打印爬取信息-图片
+# 图片
 ./DouBanMovieSpider photo info {subjectId}
-......
+```
 
-# 输出爬取信息至文件-主页
+```shell
+# 输出爬取信息至文件
+# 主页
 ./DouBanMovieSpider subject file {subjectId}
-# 输出爬取信息至文件-短评
+# 短评
 ./DouBanMovieSpider comment file {subjectId}
-# 输出爬取信息至文件-影评
+# 影评
 ./DouBanMovieSpider review file {subjectId}
-# 输出爬取信息至文件-图片
+# 图片
 ./DouBanMovieSpider photo file {subjectId}
-......
+```
 
-# 存储信息至MongoDB-主页
+```shell
+# 存储信息至MongoDB
+# 主页
 ./DouBanMovieSpider subject store {subjectId}
-# 存储信息至MongoDB-短评
+# 短评
 ./DouBanMovieSpider comment store {subjectId}
-# 存储信息至MongoDB-影评
+# 影评
 ./DouBanMovieSpider review store {subjectId}
-# 存储信息至MongoDB-图片
+# 图片
 ./DouBanMovieSpider photo store {subjectId}
-......
+```
+
+```shell
+# 从MongoDB中查询信息
+# 主页
+./DouBanMovieSpider subject query {subjectId}
+# 短评
+./DouBanMovieSpider comment query {subjectId} {pageNo} {pageSize}
+# 影评
+./DouBanMovieSpider review query {subjectId} {pageNo} {pageSize}
+# 图片
+./DouBanMovieSpider photo query {subjectId} {pageNo} {pageSize}
 ```
 
 #### 配置MongoDB
-
-- store/mongo.go
+- [mongo.go](service/mongo.go)

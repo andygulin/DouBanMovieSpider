@@ -42,7 +42,14 @@ type CommentResponse struct {
 }
 
 type ReviewResponse struct {
-	CommentResponse
+	SubjectId   string `json:"subject_id" bson:"subject_id"`
+	Avatar      string `json:"avatar" bson:"avatar"`
+	UserName    string `json:"user_name" bson:"user_name"`
+	Star        int    `json:"star" bson:"star"`
+	CommentDate string `json:"comment_date" bson:"comment_date"`
+	Content     string `json:"content" bson:"content"`
+	HaveSee     bool   `json:"have_see" bson:"have_see"` // true status=P , false status=F
+
 	Title   string `json:"title" bson:"title"`
 	Summary string `json:"summary" bson:"summary"`
 }

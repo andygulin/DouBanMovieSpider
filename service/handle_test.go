@@ -6,12 +6,18 @@ var infoHandle Handle
 var fileHandle Handle
 var storeHandle Handle
 
+var storeQuery Query
+
 const size = 10
+const pageNo = 1
+const pageSize = 10
 
 func init() {
 	infoHandle = new(InfoHandle)
 	fileHandle = new(FileHandle)
 	storeHandle = new(StoreHandle)
+
+	storeQuery = &StoreQuery{SubjectId: "26373447", PageNo: pageNo, PageSize: pageSize}
 }
 
 func TestInfoHandle_HandleSubject(t *testing.T) {
@@ -140,6 +146,38 @@ func TestStoreHandle_HandlePhoto(t *testing.T) {
 		responses[i] = PhotoResponse{}
 	}
 	result, err := storeHandle.HandlePhoto(responses)
+	if err != nil {
+		t.Error(err.Error())
+	}
+	t.Log(result)
+}
+
+func TestStoreQuery_QuerySubject(t *testing.T) {
+	result, err := storeQuery.QuerySubject()
+	if err != nil {
+		t.Error(err.Error())
+	}
+	t.Log(result)
+}
+
+func TestStoreQuery_QueryComment(t *testing.T) {
+	result, err := storeQuery.QueryComment()
+	if err != nil {
+		t.Error(err.Error())
+	}
+	t.Log(result)
+}
+
+func TestStoreQuery_QueryReview(t *testing.T) {
+	result, err := storeQuery.QueryReview()
+	if err != nil {
+		t.Error(err.Error())
+	}
+	t.Log(result)
+}
+
+func TestStoreQuery_QueryPhoto(t *testing.T) {
+	result, err := storeQuery.QueryPhoto()
 	if err != nil {
 		t.Error(err.Error())
 	}

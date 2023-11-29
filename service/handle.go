@@ -3,7 +3,9 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"os"
@@ -61,29 +63,8 @@ func (obj *FileHandle) HandlePhoto(response []PhotoResponse) (Result, error) {
 	return ToFileResult(response, fileName)
 }
 
-var mongoDb *mongo.Client
-
-func NewMongoDb() (*mongo.Client, error) {
-	var err error
-	if mongoDb == nil {
-		clientOptions := options.Client().ApplyURI("mongodb://127.0.0.1:27017")
-		mongoDb, err = mongo.Connect(context.TODO(), clientOptions)
-		if err != nil {
-			return nil, err
-		}
-	}
-	return mongoDb, err
-}
-
 type StoreHandle struct {
 }
-
-const (
-	cSubject = "subject"
-	cComment = "comment"
-	cReview  = "review"
-	cPhoto   = "photo"
-)
 
 func (obj *StoreHandle) HandleSubject(response SubjectResponse) (Result, error) {
 	arr := []any{response}
@@ -172,4 +153,119 @@ func writeFile(fileName string, content string) error {
 		return err
 	}
 	return nil
+}
+
+type Query interface {
+	QuerySubject() (Result, error)
+	QueryComment() (Result, error)
+	QueryReview() (Result, error)
+	QueryPhoto() (Result, error)
+}
+
+type StoreQuery struct {
+	SubjectId string `json:"subject_id" bson:"subject_id"`
+	PageNo    int64  `json:"page_no" bson:"page_no"`
+	PageSize  int64  `json:"page_size" bson:"page_size"`
+}
+
+func (obj *StoreQuery) QuerySubject() (Result, error) {
+	client, err := NewMongoDb()
+	if err != nil {
+		return "", err
+	}
+
+	coll := client.Database(DB).Collection(cSubject)
+
+	var ret SubjectResponse
+	err = coll.FindOne(context.TODO(), bson.M{"subject_id": obj.SubjectId}).Decode(&ret)
+	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return Result(fmt.Sprintf("Not Found Document %s", obj.SubjectId)), err
+		}
+	}
+	return ToInfoResult(ret)
+}
+
+func (obj *StoreQuery) QueryComment() (Result, error) {
+	client, err := NewMongoDb()
+	if err != nil {
+		return "", err
+	}
+
+	coll := client.Database(DB).Collection(cComment)
+
+	var ret []CommentResponse
+
+	pageNo := obj.PageNo
+	pageSize := obj.PageSize
+	skip := (pageNo - 1) * pageSize
+	opts := options.Find().SetSkip(skip).SetLimit(pageSize)
+	cursor, err := coll.Find(context.TODO(), bson.M{"subject_id": obj.SubjectId}, opts)
+	if err != nil {
+		return "", err
+	}
+	if err = cursor.All(context.TODO(), &ret); err != nil {
+		return "", err
+	}
+
+	if ret == nil {
+		return "Empty Result", nil
+	}
+	return ToInfoResult(ret)
+}
+
+func (obj *StoreQuery) QueryReview() (Result, error) {
+	client, err := NewMongoDb()
+	if err != nil {
+		return "", err
+	}
+
+	coll := client.Database(DB).Collection(cReview)
+
+	var ret []ReviewResponse
+
+	pageNo := obj.PageNo
+	pageSize := obj.PageSize
+	skip := (pageNo - 1) * pageSize
+	opts := options.Find().SetSkip(skip).SetLimit(pageSize)
+	cursor, err := coll.Find(context.TODO(), bson.M{"subject_id": obj.SubjectId}, opts)
+	if err != nil {
+		return "", err
+	}
+	if err = cursor.All(context.TODO(), &ret); err != nil {
+		return "", err
+	}
+
+	if ret == nil {
+		return "Empty Result", nil
+	}
+	return ToInfoResult(ret)
+}
+
+func (obj *StoreQuery) QueryPhoto() (Result, error) {
+	client, err := NewMongoDb()
+	if err != nil {
+		return "", err
+	}
+
+	coll := client.Database(DB).Collection(cPhoto)
+
+	var ret []PhotoResponse
+
+	pageNo := obj.PageNo
+	pageSize := obj.PageSize
+	skip := (pageNo - 1) * pageSize
+	opts := options.Find().SetSkip(skip).SetLimit(pageSize)
+	cursor, err := coll.Find(context.TODO(), bson.M{"subject_id": obj.SubjectId}, opts)
+	if err != nil {
+		return "", err
+	}
+	if err = cursor.All(context.TODO(), &ret); err != nil {
+		return "", err
+	}
+
+	if ret == nil {
+		return "Empty Result", nil
+	}
+	return ToInfoResult(ret)
 }
