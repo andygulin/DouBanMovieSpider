@@ -85,13 +85,8 @@ var subjectCmd = &cobra.Command{
 				output, err = storeHandle.HandleSubject(response)
 			}
 		} else {
-			pageNo, _ := strconv.ParseInt(args[2], 10, 64)
-			pageSize, _ := strconv.ParseInt(args[3], 10, 64)
-
 			storeQuery = &StoreQuery{
 				SubjectId: subjectId,
-				PageNo:    pageNo,
-				PageSize:  pageSize,
 			}
 			output, err = storeQuery.QuerySubject()
 		}
