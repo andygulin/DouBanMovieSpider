@@ -39,7 +39,7 @@ func (obj *Request) SpiderSubject() (SubjectResponse, error) {
 		_ = Body.Close()
 	}(res.Body)
 	if res.StatusCode != http.StatusOK {
-		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
+		log.Printf(fmt.Sprintf("status code error: %d %s\n", res.StatusCode, res.Status))
 	}
 
 	doc, err := goquery.NewDocumentFromReader(res.Body)
@@ -119,20 +119,19 @@ func (obj *Request) SpiderSubject() (SubjectResponse, error) {
 
 	doc.Find("div[class='ratings-on-weight'] div[class='item'] span[class='rating_per']").Each(func(i int, selection *goquery.Selection) {
 		bar, _ := strconv.ParseFloat(strings.ReplaceAll(selection.Text(), "%", ""), 32)
-		if i == 0 {
+		switch i {
+		case 0:
 			response.RatingNumPercent.RatingNum5 = float32(bar)
-		}
-		if i == 1 {
+		case 1:
 			response.RatingNumPercent.RatingNum4 = float32(bar)
-		}
-		if i == 2 {
+		case 2:
 			response.RatingNumPercent.RatingNum3 = float32(bar)
-		}
-		if i == 3 {
+		case 3:
 			response.RatingNumPercent.RatingNum2 = float32(bar)
-		}
-		if i == 4 {
+		case 4:
 			response.RatingNumPercent.RatingNum1 = float32(bar)
+		default:
+
 		}
 	})
 
@@ -181,7 +180,7 @@ func spiderComment0(subjectId string, status string) ([]CommentResponse, error) 
 			log.Fatal(err)
 		}
 		if res.StatusCode != http.StatusOK {
-			fmt.Println(fmt.Sprintf("status code error: %d %s", res.StatusCode, res.Status))
+			log.Printf(fmt.Sprintf("status code error: %d %s\n", res.StatusCode, res.Status))
 			break
 		}
 
@@ -264,7 +263,7 @@ func (obj *Request) SpiderReview() ([]ReviewResponse, error) {
 			log.Fatal(err)
 		}
 		if res.StatusCode != http.StatusOK {
-			fmt.Println(fmt.Sprintf("status code error: %d %s", res.StatusCode, res.Status))
+			log.Printf(fmt.Sprintf("status code error: %d %s\n", res.StatusCode, res.Status))
 			break
 		}
 
@@ -360,7 +359,7 @@ func (obj *Request) SpiderPhoto() ([]PhotoResponse, error) {
 			log.Fatal(err)
 		}
 		if res.StatusCode != http.StatusOK {
-			fmt.Println(fmt.Sprintf("status code error: %d %s", res.StatusCode, res.Status))
+			log.Printf(fmt.Sprintf("status code error: %d %s\n", res.StatusCode, res.Status))
 			break
 		}
 
