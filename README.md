@@ -62,4 +62,4 @@ go build
 ```
 
 #### 配置MongoDB
-- [mongo.go](service/mongo.go)
+- [conf.yaml](conf/conf.yaml)
