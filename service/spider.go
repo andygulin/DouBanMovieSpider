@@ -383,10 +383,16 @@ func (obj *Request) SpiderPhoto() ([]PhotoResponse, error) {
 				foo := selection.Find(".prop").Text()
 				foo = strings.ReplaceAll(foo, " ", "")
 				foo = strings.ReplaceAll(foo, "\n", "")
-				bar := strings.Split(foo, "x")
-				photoResponse.RawSize.Width, _ = strconv.Atoi(bar[0])
-				photoResponse.RawSize.Height, _ = strconv.Atoi(bar[1])
 
+				photoResponse.RawSize.Width = 0
+				photoResponse.RawSize.Height = 0
+				if foo != "" {
+					bar := strings.Split(foo, "x")
+					if len(bar) > 0 {
+						photoResponse.RawSize.Width, _ = strconv.Atoi(bar[0])
+						photoResponse.RawSize.Height, _ = strconv.Atoi(bar[1])
+					}
+				}
 				rets = append(rets, photoResponse)
 			})
 		} else {

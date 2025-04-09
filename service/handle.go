@@ -168,6 +168,11 @@ type StoreQuery struct {
 	PageSize  int64  `json:"page_size" bson:"page_size"`
 }
 
+type PageResult struct {
+	Count int64 `json:"count"`
+	List  any   `json:"list"`
+}
+
 func (obj *StoreQuery) QuerySubject() (Result, error) {
 	client, err := NewMongoDb()
 	if err != nil {
@@ -196,6 +201,10 @@ func (obj *StoreQuery) QueryComment() (Result, error) {
 
 	var ret []CommentResponse
 
+	count, err := coll.CountDocuments(context.TODO(), bson.M{"subject_id": obj.SubjectId}, nil)
+	if err != nil {
+		return "", err
+	}
 	pageNo := obj.PageNo
 	pageSize := obj.PageSize
 	skip := (pageNo - 1) * pageSize
@@ -211,7 +220,7 @@ func (obj *StoreQuery) QueryComment() (Result, error) {
 	if ret == nil {
 		return "Empty Result", nil
 	}
-	return ToInfoResult(ret)
+	return ToInfoResult(PageResult{Count: count, List: ret})
 }
 
 func (obj *StoreQuery) QueryReview() (Result, error) {
@@ -224,6 +233,10 @@ func (obj *StoreQuery) QueryReview() (Result, error) {
 
 	var ret []ReviewResponse
 
+	count, err := coll.CountDocuments(context.TODO(), bson.M{"subject_id": obj.SubjectId}, nil)
+	if err != nil {
+		return "", err
+	}
 	pageNo := obj.PageNo
 	pageSize := obj.PageSize
 	skip := (pageNo - 1) * pageSize
@@ -239,7 +252,7 @@ func (obj *StoreQuery) QueryReview() (Result, error) {
 	if ret == nil {
 		return "Empty Result", nil
 	}
-	return ToInfoResult(ret)
+	return ToInfoResult(PageResult{Count: count, List: ret})
 }
 
 func (obj *StoreQuery) QueryPhoto() (Result, error) {
@@ -252,6 +265,10 @@ func (obj *StoreQuery) QueryPhoto() (Result, error) {
 
 	var ret []PhotoResponse
 
+	count, err := coll.CountDocuments(context.TODO(), bson.M{"subject_id": obj.SubjectId}, nil)
+	if err != nil {
+		return "", err
+	}
 	pageNo := obj.PageNo
 	pageSize := obj.PageSize
 	skip := (pageNo - 1) * pageSize
@@ -267,5 +284,5 @@ func (obj *StoreQuery) QueryPhoto() (Result, error) {
 	if ret == nil {
 		return "Empty Result", nil
 	}
-	return ToInfoResult(ret)
+	return ToInfoResult(PageResult{Count: count, List: ret})
 }

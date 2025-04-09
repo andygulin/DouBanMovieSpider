@@ -11,8 +11,8 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:   "DouBanMovieSpider",
-	Short: "Spider Douban movie/TV show information",
-	Long:  "Spider Douban movie/TV show information",
+	Short: "抓取豆瓣电影",
+	Long:  "抓取豆瓣电影信息（详情、图片、评论、影评），打印信息或将信息保存至文件和MongoDB.",
 }
 
 func Execute() {
@@ -24,14 +24,17 @@ func Execute() {
 }
 
 const (
-	cmdInfo  = "info"
-	cmdFile  = "file"
+	// 打印信息
+	cmdInfo = "info"
+	// 保存至文件
+	cmdFile = "file"
+	// 保存至数据库
 	cmdStore = "store"
-	cmdPhoto = "photo"
+	// 从数据库中查询
 	cmdQuery = "query"
 )
 
-var subCommands = []string{cmdInfo, cmdFile, cmdStore, cmdPhoto, cmdQuery}
+var subCommands = []string{cmdInfo, cmdFile, cmdStore, cmdQuery}
 
 func inArray(subCommand string) bool {
 	exist := false
@@ -42,6 +45,17 @@ func inArray(subCommand string) bool {
 		}
 	}
 	return exist
+}
+
+func toInt(str string) (int64, error) {
+	return strconv.ParseInt(str, 10, 64)
+}
+
+func checkSubCommands(subCommand string) {
+	if !inArray(subCommand) {
+		fmt.Println(fmt.Sprintf("命令 %s 不存在. 请使用 %v", subCommand, subCommands))
+		os.Exit(1)
+	}
 }
 
 var infoHandle Handle
@@ -59,14 +73,12 @@ func init() {
 
 var subjectCmd = &cobra.Command{
 	Use:   "subject",
-	Short: "Subject Info.",
-	Long:  "Subject Info.",
+	Short: "电影详情信息",
+	Long:  "电影详情信息",
 	Run: func(cmd *cobra.Command, args []string) {
 		subCommand := args[0]
+		checkSubCommands(subCommand)
 		subjectId := args[1]
-		if !inArray(subCommand) {
-			panic(fmt.Sprintf("Command %s is incorrect. Please use %v", subCommand, subCommands))
-		}
 
 		var output Result
 		var err error
@@ -100,14 +112,12 @@ var subjectCmd = &cobra.Command{
 
 var commentCmd = &cobra.Command{
 	Use:   "comment",
-	Short: "Comment Info.",
-	Long:  "Comment Info.",
+	Short: "电影评论信息",
+	Long:  "电影评论信息",
 	Run: func(cmd *cobra.Command, args []string) {
 		subCommand := args[0]
+		checkSubCommands(subCommand)
 		subjectId := args[1]
-		if !inArray(subCommand) {
-			panic(fmt.Sprintf("Command %s is incorrect. Please use %v", subCommand, subCommands))
-		}
 
 		var output Result
 		var err error
@@ -127,8 +137,8 @@ var commentCmd = &cobra.Command{
 				output, err = storeHandle.HandleComment(response)
 			}
 		} else {
-			pageNo, _ := strconv.ParseInt(args[2], 10, 64)
-			pageSize, _ := strconv.ParseInt(args[3], 10, 64)
+			pageNo, _ := toInt(args[2])
+			pageSize, _ := toInt(args[3])
 
 			storeQuery = &StoreQuery{
 				SubjectId: subjectId,
@@ -146,14 +156,12 @@ var commentCmd = &cobra.Command{
 
 var reviewCmd = &cobra.Command{
 	Use:   "review",
-	Short: "Review Info.",
-	Long:  "Review Info.",
+	Short: "电影影评信息",
+	Long:  "电影影评信息",
 	Run: func(cmd *cobra.Command, args []string) {
 		subCommand := args[0]
+		checkSubCommands(subCommand)
 		subjectId := args[1]
-		if !inArray(subCommand) {
-			panic(fmt.Sprintf("Command %s is incorrect. Please use %v", subCommand, subCommands))
-		}
 
 		var output Result
 		var err error
@@ -173,8 +181,8 @@ var reviewCmd = &cobra.Command{
 				output, err = storeHandle.HandleReview(response)
 			}
 		} else {
-			pageNo, _ := strconv.ParseInt(args[2], 10, 64)
-			pageSize, _ := strconv.ParseInt(args[3], 10, 64)
+			pageNo, _ := toInt(args[2])
+			pageSize, _ := toInt(args[3])
 
 			storeQuery = &StoreQuery{
 				SubjectId: subjectId,
@@ -192,14 +200,12 @@ var reviewCmd = &cobra.Command{
 
 var photoCmd = &cobra.Command{
 	Use:   "photo",
-	Short: "Photo Info.",
-	Long:  "Photo Info.",
+	Short: "电影图片信息",
+	Long:  "电影图片信息",
 	Run: func(cmd *cobra.Command, args []string) {
 		subCommand := args[0]
+		checkSubCommands(subCommand)
 		subjectId := args[1]
-		if !inArray(subCommand) {
-			panic(fmt.Sprintf("Command %s is incorrect. Please use %v", subCommand, subCommands))
-		}
 
 		var output Result
 		var err error
@@ -219,8 +225,8 @@ var photoCmd = &cobra.Command{
 				output, err = storeHandle.HandlePhoto(response)
 			}
 		} else {
-			pageNo, _ := strconv.ParseInt(args[2], 10, 64)
-			pageSize, _ := strconv.ParseInt(args[3], 10, 64)
+			pageNo, _ := toInt(args[2])
+			pageSize, _ := toInt(args[3])
 
 			storeQuery = &StoreQuery{
 				SubjectId: subjectId,
