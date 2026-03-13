@@ -10,55 +10,58 @@
 #### 使用方法
 
 ```shell
-go build
+go build -o bin/Spider spider/main.go
+
+# Top250
+go build -o bin/Top250 top250/main.go
 ```
 
 ```shell
 # 打印爬取信息
 # 主页
-./DouBanMovieSpider subject info {subjectId}
+./Spider subject info {subjectId}
 # 短评
-./DouBanMovieSpider comment info {subjectId}
+./Spider comment info {subjectId}
 # 影评
-./DouBanMovieSpider review info {subjectId}
+./Spider review info {subjectId}
 # 图片
-./DouBanMovieSpider photo info {subjectId}
+./Spider photo info {subjectId}
 ```
 
 ```shell
 # 输出爬取信息至文件
 # 主页
-./DouBanMovieSpider subject file {subjectId}
+./Spider subject file {subjectId}
 # 短评
-./DouBanMovieSpider comment file {subjectId}
+./Spider comment file {subjectId}
 # 影评
-./DouBanMovieSpider review file {subjectId}
+./Spider review file {subjectId}
 # 图片
-./DouBanMovieSpider photo file {subjectId}
+./Spider photo file {subjectId}
 ```
 
 ```shell
 # 存储信息至MongoDB
 # 主页
-./DouBanMovieSpider subject store {subjectId}
+./Spider subject store {subjectId}
 # 短评
-./DouBanMovieSpider comment store {subjectId}
+./Spider comment store {subjectId}
 # 影评
-./DouBanMovieSpider review store {subjectId}
+./Spider review store {subjectId}
 # 图片
-./DouBanMovieSpider photo store {subjectId}
+./Spider photo store {subjectId}
 ```
 
 ```shell
 # 从MongoDB中查询信息
 # 主页
-./DouBanMovieSpider subject query {subjectId}
+./Spider subject query {subjectId}
 # 短评
-./DouBanMovieSpider comment query {subjectId} {pageNo} {pageSize}
+./Spider comment query {subjectId} {pageNo} {pageSize}
 # 影评
-./DouBanMovieSpider review query {subjectId} {pageNo} {pageSize}
+./Spider review query {subjectId} {pageNo} {pageSize}
 # 图片
-./DouBanMovieSpider photo query {subjectId} {pageNo} {pageSize}
+./Spider photo query {subjectId} {pageNo} {pageSize}
 ```
 
 #### 配置MongoDB

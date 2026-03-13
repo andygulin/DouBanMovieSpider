@@ -3,10 +3,11 @@ package cmd
 import (
 	. "DouBanMovieSpider/service"
 	"fmt"
-	"github.com/spf13/cobra"
 	"log"
 	"os"
 	"strconv"
+
+	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
@@ -53,7 +54,7 @@ func toInt(str string) (int64, error) {
 
 func checkSubCommands(subCommand string) {
 	if !inArray(subCommand) {
-		fmt.Println(fmt.Sprintf("命令 %s 不存在. 请使用 %v", subCommand, subCommands))
+		fmt.Printf("命令 %s 不存在. 请使用 %v\n", subCommand, subCommands)
 		os.Exit(1)
 	}
 }
